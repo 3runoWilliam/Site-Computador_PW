@@ -1,0 +1,37 @@
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" th:fragment="form(computador, modelo)">
+    <h2 th:text="${modelo}"></h2>
+    <div class="table-responsive">
+        <form th:object="${computador}" method="post" th:action="@{/salvar}" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}">
+            <table class="table table-sm">
+                <tbody>
+                <tr>
+                    <td style="text-align: end;">Modelo:</td>
+                    <td><input type="text" class="form-control" th:field="*{modelo}"></td>
+                    <p th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></p>
+                </tr>
+                <tr>
+                    <td style="text-align: end;">Marca:</td>
+                    <td><input type="text" class="form-control" th:field="*{marca}"></td>
+                </tr>
+                <tr>
+                    <td style="text-align: end;">Preco:</td>
+                    <td><input type="text" class="form-control" th:field="*{preco}"></td>
+                </tr>
+                <tr>
+                    <td style="text-align: end;">Imagem:</td>
+                    <td><input type="file" name="file"/></td>
+                </tr>
+                <tr>
+                    <td style="text-align: end;">Descricao:</td>
+                    <td><input type="text" class="form-control" th:field="*{descricao}"></td>
+                </tr>
+                <tr>
+                    <td style="text-align: end;"><button type="submit" class="btn btn-primary">Enviar</button></td>
+                    <td><button type="submit" class="btn btn-danger">Limpar</button></td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</main>
