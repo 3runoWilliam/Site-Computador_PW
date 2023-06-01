@@ -122,46 +122,14 @@ public class ComputadorController {
     }
 
     @GetMapping("/vercarrinho")
-    public String getVerCarrinho(Model model){
-        List<Computador> computador = service.findAll();
-        model.addAttribute("computador", computador);
-
-        model.addAttribute("computador", computador);
-        
-        return "vercarrinho";
-    }
-
-    @GetMapping("/visualizarCarrinho")
-    public String visualizarCarrinho(HttpServletRequest request, Model model) throws ServletException, IOException {
-        Cookie carrinhoCompras = new Cookie("carrinhoCompras", "");
-        Cookie[] requestCookies = request.getCookies();
-        boolean achouCarrinho = false;
-        if (requestCookies != null) {
-            for (var c : requestCookies) {
-                achouCarrinho = true;
-                carrinhoCompras = c;
-                break;
-            }
-        }
-        Computador computador = null;
-        var i = 0;
-        ArrayList<Computador> lista_computadores = new ArrayList();
-
-        if(achouCarrinho == true) {
-            StringTokenizer tokenizer = new StringTokenizer(carrinhoCompras.getValue(), "|");
-            while (tokenizer.hasMoreTokens()) {
-                String input = tokenizer.nextToken();
-                int number = Integer.parseInt(input);
-                String numericString = input.replaceAll("[^0-9]", ""); // Remove caracteres não numéricos
-                computador = service.findById((long) number);
-
-                lista_computadores.add(computador);
-            }
-            model.addAttribute("computador", lista_computadores);
-            return "vercarrinho";
-        } else {
+    public String getVerCarrinho(HttpSession session, Model model, RedirectAttributes redirectAttributes){ 
+        List<Computador> carrinho = (List<Computador>) session.getAttribute("carrinho");
+        if(session.getAttribute("carrinho") == null){
+            redirectAttributes.addAttribute("msg", "sem itens no carrinho");
             return "redirect:/";
         }
+        model.addAttribute("computador", carrinho);
+        return "vercarrinho";
     }
 
     @GetMapping("/adicionarCarrinho/{id}")
@@ -191,6 +159,20 @@ public class ComputadorController {
         model.addAttribute("computador", computadorUtil);
 
         return "index";
+    }
+
+    @GetMapping("/remover/{id}")
+    public String removerItemCarrinho(@PathVariable(name = "id") Long id, HttpSession session, RedirectAttributes redirectAttributes){
+        Computador c = service.findById(id);
+        List<Computador> carrinho = (List<Computador>) session.getAttribute("carrinho");
+        for (int i = 0; i < carrinho.size(); i++) {
+            if(carrinho.get(i).equals(c)){
+                carrinho.remove(c);
+            }
+        }
+        session.setAttribute("carrinho", carrinho);
+
+        return "vercarrinho";
     }
 
 }
