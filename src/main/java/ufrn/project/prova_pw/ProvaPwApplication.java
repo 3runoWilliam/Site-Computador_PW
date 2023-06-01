@@ -34,11 +34,6 @@ public class ProvaPwApplication implements WebMvcConfigurer {
         };
     }
 
-	// @Bean
-    // public PasswordEncoder passwordEncoder() {
-    //     return new BCryptPasswordEncoder();
-    // }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/images/");

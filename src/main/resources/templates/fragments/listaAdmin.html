@@ -1,12 +1,10 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" th:fragment="mainpc(computador)">
 
-    <h2>Computador</h2>
+    <h2>Computador ADMIN</h2>
 
     <div class="container px-4 px-lg-5 mt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-
             <div th:each="c : ${computador}"  th:object="${c}" class="col mb-5">
-
                 <div class="card h-100">
                 <img th:src="@{'/images/' + *{imagem}}" class="card-img-top" alt="..." />
                 <div th:text="*{modelo}" class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem"></div>
@@ -17,10 +15,11 @@
                         <span th:text="*{descricao}"></span><br>
                         <h1 style="background: rgb(182, 182, 182);" th:text="*{preco}"></h1>
                         <div style="align-items: center;">
-                        <a th:href="@{'/adicionarCarrinho/'+ *{id}}" class="btn btn-outline-dark mt-auto">colocar no carrinho</a>
-                    </div>
+                        <td > <a th:href="@{'/editar/'+ *{id}}">Editar</a> </td>
+                        <td > <a th:href="@{'/deletar/'+ *{id}}">Deletar</a></td>
+                        </div>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </main>
