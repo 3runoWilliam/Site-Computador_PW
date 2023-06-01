@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PRINCIPAL</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-    
-    <link href="./styles.css" rel="stylesheet" />
     <style>
         @charset "UTF-8";
 
@@ -10825,7 +10823,7 @@
 
         <div th:replace="~{/fragments/commons :: header}"></div>
 
-        <main th:replace="~{/fragments/listaComputador :: mainpc(${computador})}"></main>
+        <div th:replace="~{/fragments/listaComputador :: mainpc(${computador})}"></div>
 
         <div th:replace="~{/fragments/commons :: footer}"></div>
 

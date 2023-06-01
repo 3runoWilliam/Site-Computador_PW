@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import jakarta.servlet.http.Cookie;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,23 +42,15 @@ public class ComputadorController {
 
     @GetMapping("/")
     public String getIndex(Model model, HttpServletResponse response, HttpSession session){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("username", ""+authentication.getName());
 
-        List<Computador> carrinho = (List<Computador>) session.getAttribute("carrinho");
-        if (carrinho == null) {
-            carrinho = new ArrayList<>();
-        }
-        model.addAttribute("carrinho", carrinho);
+        List<Computador> computador = service.findAll();
+        model.addAttribute("computador", computador);
 
-        List<Computador> sapatos = service.findByDeletedIsNull();
-        model.addAttribute("sapatos",sapatos);
+        model.addAttribute("computador", computador);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss");
-        String dataHora = dateFormat.format(new Date());
-        Cookie c = new Cookie("visita", dataHora);
-        c.setMaxAge(86400);
-        response.addCookie(c);
+        Cookie cookie = new Cookie("visita","cookie-value");
+        cookie.setMaxAge(60*60*24);
+        response.addCookie(cookie);
 
         return "index";
     }
@@ -71,8 +59,31 @@ public class ComputadorController {
     public String doCadastrar(Model model){
         Computador c = new Computador();
         model.addAttribute("computador", c);
-
+        
         return "cadastrar";
+    }
+    
+    @PostMapping("/salvar")
+    public String doSalvaComputador(@ModelAttribute @Valid Computador c, Errors errors,
+                                    @RequestParam("file") MultipartFile file,
+                                    RedirectAttributes redirectAttributes, HttpServletRequest request){
+
+        if (errors.hasErrors()){
+            redirectAttributes.addAttribute("msg", "Cadastro fracassado");
+            return "redirect:/";
+        }else {
+            try {
+                c.setImagem(file.getOriginalFilename());
+                service.update(c);
+                fileStorageService.save(file);
+
+                redirectAttributes.addFlashAttribute("msgSucesso", "Salvo com sucesso");
+                return "redirect:/";
+            } catch (Exception e) {
+                redirectAttributes.addAttribute("msg", "Cadastro FRACASSO!");
+                return "cadastrar";
+            }
+        }
     }
 
     @GetMapping("editar/{id}")
@@ -94,25 +105,14 @@ public class ComputadorController {
         return "redirect:/";
     }
 
-    @PostMapping("/salvar")
-    public String doSalvaComputador(@ModelAttribute @Valid Computador c, Errors errors,
-                                    @RequestParam("file") MultipartFile file,
-                                    RedirectAttributes redirectAttributes){
 
-        if (errors.hasErrors()){
-            redirectAttributes.addAttribute("msg", "Cadastro fracassado");
-            return "redirect:/";
-        }else {
-            try {
-                c.setImagem(fileStorageService.save(file));
-                service.create(c);
-                redirectAttributes.addFlashAttribute("msgSucesso", "Salvo com sucesso");
-                return "redirect:/admin";
-            } catch (Exception e) {
-                redirectAttributes.addAttribute("msg", "Cadastro FRACASSO!");
-                return "redirect:/";
-            }
-        }
+    @GetMapping("/admin")
+    public String adminPage(Model model){
+        List<Computador> lista = new ArrayList<>();
+        lista = service.findAll();
+        
+        model.addAttribute("computadores", lista);
+        
+        return "admin";
     }
-    
 }

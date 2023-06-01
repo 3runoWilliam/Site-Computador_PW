@@ -1,28 +1,23 @@
 package ufrn.project.prova_pw.service;
 
-import jakarta.annotation.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.stream.Stream;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 @Service
 public class FileStorageService {
+
     private final Path root = Paths.get("src/main/webapp/WEB-INF/images");
-
-    public FileStorageService(){
-        //init();
-    }
-
 
     public void init() {
         try {
@@ -32,28 +27,21 @@ public class FileStorageService {
         }
     }
 
-    public String save(MultipartFile file) {
-
+    public void save(MultipartFile file) {
         try {
-            String fileExtension = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-            var numAleatorio = Math.random()*40;
-            Files.copy(file.getInputStream(), this.root.resolve(numAleatorio+"."+fileExtension));
-            return numAleatorio+"."+fileExtension;
+            Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
         } catch (Exception e) {
-            if (e instanceof FileAlreadyExistsException) {
-                throw new RuntimeException("A file of that name already exists.");
-            }
-
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
     }
 
     public Resource load(String filename) {
         try {
             Path file = root.resolve(filename);
-            UrlResource resource = new UrlResource(file.toUri());
+            Resource resource = new UrlResource(file.toUri());
+
             if (resource.exists() || resource.isReadable()) {
-                return (Resource) resource;
+                return resource;
             } else {
                 throw new RuntimeException("Could not read the file!");
             }

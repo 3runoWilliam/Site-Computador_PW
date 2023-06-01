@@ -2,34 +2,23 @@
 
     <h2>Computador</h2>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-sm">
-            <thead>
-            <tr>
-                <th scope="col">Imagem</th>
-                <th scope="col">#id</th>
-                <th scope="col">Modelo</th>
-                <th scope="col">Marca</th>
-                <th scope="col">Preço</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Editar</th>
-                <th scope="col">Deletar</th>
-                <th scope="col">Adicionar Carrinho</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="c : ${computador}" th:object="${c}">
-                <td ><img width="100px" th:src="@{'/images/' + *{imagem}}" alt="imagem"/></td>
-                <td th:text="*{id}"></td>
-                <td th:text="*{modelo}"></td>
-                <td th:text="*{marca}"></td>
-                <td th:text="*{preco}"></td>
-                <td th:text="*{descricao}"></td>
-                <td > <a th:href="@{'/editar/'+ *{id}}">Editar</a> </td>
-                <td > <a th:href="@{'/deletar/'+ *{id}}">Deletar</a></td>
-                <td > <a th:href="@{'/adicionarcarrinho/'+ *{id}}">Adicionar Carrinho</a></td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <div th:each="c : ${computador}"  th:object="${c}" class="col mb-5">
+                <div class="card h-100">
+                <img th:src="@{'/images/' + *{imagem}}" class="card-img-top" alt="..." />
+                <div th:text="*{modelo}" class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem"></div>
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                        <strong th:text="*{marca}" class="fw-bolder"></strong><br>
+                        <span th:text="*{descricao}"></span><br>
+                        <h1 style="background: rgb(182, 182, 182);" th:text="*{preco}"></h1>
+                        <div style="align-items: center;">
+                        <td > <a th:href="@{'/editar/'+ *{id}}">Editar</a> </td>
+                        <td > <a th:href="@{'/deletar/'+ *{id}}">Deletar</a></td>
+                    </div>
+            </div>
+        </div>
+    </div>
     </div>
 </main>
