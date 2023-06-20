@@ -25,8 +25,6 @@ public class Usuario implements UserDetails{
     String username;
     String login;
     String password;
-    @Email
-    String email;
     Boolean isAdmin;
 
     @Override

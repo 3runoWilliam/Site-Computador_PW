@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class Computador {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
