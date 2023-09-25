@@ -26,8 +26,8 @@ public class ProvaPwApplication implements WebMvcConfigurer {
     CommandLineRunner commandLineRunner(ComputadorRepository sapatoRepository, UsuarioRepository usuarioRepository, PasswordEncoder encoder){
         return args -> {
             List<Usuario> users = Stream.of(
-                    new Usuario(1L, "Bruno", "Bruno", encoder.encode("1111"), true),
-					new Usuario(2L, "Taniro", "Taniro", encoder.encode("2222"), false),
+                    new Usuario(1L, "Bruno", "Bruno", encoder.encode("1111"), true),			
+		    new Usuario(2L, "Taniro", "Taniro", encoder.encode("2222"), false),
                     new Usuario(3L, "Tobias", "Tobias", encoder.encode("3333"), false)
             ).collect(Collectors.toList());
             usuarioRepository.saveAll(users);
